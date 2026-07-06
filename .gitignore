@@ -12,3 +12,7 @@ frontend/dist/
 
 # VS Code
 .vscode/
+
+
+backend/uploads/
+backend/layouts/
