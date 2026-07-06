@@ -2,6 +2,16 @@ import { useState } from "react";
 
 function App() {
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    setFile(selected);
+
+    if (selected) {
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
 
   const uploadImage = async () => {
     if (!file) {
@@ -28,11 +38,20 @@ function App() {
       <input
         type="file"
         accept="image/*"
-        onChange={(e) => setFile(e.target.files[0])}
+        onChange={handleFileChange}
       />
 
-      <br />
-      <br />
+      <br /><br />
+
+      {preview && (
+        <img
+          src={preview}
+          alt="Preview"
+          width="400"
+        />
+      )}
+
+      <br /><br />
 
       <button onClick={uploadImage}>
         Upload Image
