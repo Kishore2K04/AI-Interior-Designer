@@ -4,6 +4,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [objects, setObjects] = useState([]);
+  const [layout, setLayout] = useState("");
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -11,6 +12,8 @@ function App() {
 
     if (selected) {
       setPreview(URL.createObjectURL(selected));
+    } else {
+      setPreview(null);
     }
   };
 
@@ -33,23 +36,24 @@ function App() {
   };
 
   const analyzeImage = async () => {
-  if (!file) {
-    alert("Select an image first");
-    return;
-  }
+    if (!file) {
+      alert("Select an image first");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("file", file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-  const response = await fetch("http://127.0.0.1:8000/analyze", {
-    method: "POST",
-    body: formData,
-  });
+    const response = await fetch("http://127.0.0.1:8000/analyze", {
+      method: "POST",
+      body: formData,
+    });
 
-  const data = await response.json();
-
-  setObjects(data.objects);
-};
+    const data = await response.json();
+    console.log(data);
+    setObjects(data.objects);
+    setLayout("http://127.0.0.1:8000/" + data.layout);
+  };
 
   return (
     <div style={{ padding: "30px" }}>
@@ -61,7 +65,8 @@ function App() {
         onChange={handleFileChange}
       />
 
-      <br /><br />
+      <br />
+      <br />
 
       {preview && (
         <img
@@ -71,21 +76,41 @@ function App() {
         />
       )}
 
-      <br /><br />
+      <br />
+      <br />
 
       <button onClick={uploadImage}>
         Upload Image
       </button>
-      <button onClick={analyzeImage}>
+
+      <button
+        onClick={analyzeImage}
+        style={{ marginLeft: "10px" }}
+      >
         Analyze Room
       </button>
+
       <h2>Detected Objects</h2>
 
-<ul>
-  {objects.map((obj, index) => (
-    <li key={index}>{obj.name}</li>
-  ))}
-</ul>
+    <ul>
+      {objects.map((obj, index) => (
+      <li key={index}>
+      {obj.name}
+      </li>
+      ))}
+    </ul>
+
+    <h2>Room Layout</h2>
+
+  {layout && (
+  <img
+    src={layout}
+    alt="Room Layout"
+    width="400"
+  />
+  )}
+
+      
     </div>
   );
 }

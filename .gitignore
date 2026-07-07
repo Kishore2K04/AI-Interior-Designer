@@ -9,6 +9,7 @@ frontend/dist/
 
 # Environment
 .env
+.venv/
 
 # VS Code
 .vscode/
@@ -16,3 +17,6 @@ frontend/dist/
 
 backend/uploads/
 backend/layouts/
+
+
+node_modules/
