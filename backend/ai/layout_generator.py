@@ -1,50 +1,44 @@
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-
+from PIL import Image, ImageDraw
 
 def generate_layout(objects, output_path):
+    width = 800
+    height = 600
 
-    fig, ax = plt.subplots(figsize=(8, 6))
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
 
-    ax.set_xlim(0, 1600)
-    ax.set_ylim(1200, 0)
+    # Room border
+    draw.rectangle((40, 40, 760, 560), outline="black", width=4)
 
-    # Room boundary
-    room = patches.Rectangle(
-        (20, 20),
-        1560,
-        1160,
-        linewidth=2,
-        edgecolor="black",
-        facecolor="white"
-    )
+    # Window
+    draw.rectangle((300, 40, 500, 60), fill="skyblue")
+    draw.text((360, 18), "WINDOW", fill="black")
 
-    ax.add_patch(room)
+    # Door
+    draw.rectangle((40, 500, 80, 560), fill="brown")
+    draw.text((20, 570), "DOOR", fill="black")
+
+    x = 100
+    y = 100
 
     for obj in objects:
 
-        rect = patches.Rectangle(
-            (obj["x"], obj["y"]),
-            obj["width"],
-            obj["height"],
-            linewidth=1,
-            edgecolor="blue",
-            facecolor="lightblue"
+        draw.rectangle(
+            (x, y, x + 120, y + 60),
+            outline="blue",
+            width=3
         )
 
-        ax.add_patch(rect)
-
-        ax.text(
-            obj["x"] + 5,
-            obj["y"] + 15,
-            obj["name"],
-            fontsize=8
+        draw.text(
+            (x + 20, y + 20),
+            obj["name"].upper(),
+            fill="black"
         )
 
-    plt.title("2D Room Layout")
+        y += 90
 
-    plt.axis("off")
+        if y > 430:
+            y = 100
+            x += 180
 
-    plt.savefig(output_path, bbox_inches="tight")
-
-    plt.close()
+    image.save(output_path)
