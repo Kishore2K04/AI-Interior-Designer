@@ -1,3 +1,4 @@
+from fastapi import Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from ai.layout_generator import generate_layout
@@ -36,7 +37,10 @@ async def upload_image(file: UploadFile = File(...)):
     }
     print(detected)
 @app.post("/analyze")
-async def analyze_image(file: UploadFile = File(...)):
+async def analyze_image(
+    file: UploadFile = File(...),
+    style: str = Form("Modern")
+):
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
 
     with open(file_path, "wb") as buffer:
@@ -46,8 +50,11 @@ async def analyze_image(file: UploadFile = File(...)):
     print("Detected:", detected)
     layout_path = "layouts/layout.png"
     generate_layout(detected, layout_path)
+    
+    print("Selected Style:", style)
 
     return {
     "objects": detected,
-    "layout": layout_path
-     }
+    "layout": "/layouts/layout.png",
+    "style": style
+}

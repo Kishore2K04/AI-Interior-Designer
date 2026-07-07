@@ -5,6 +5,7 @@ function App() {
   const [preview, setPreview] = useState(null);
   const [objects, setObjects] = useState([]);
   const [layout, setLayout] = useState("");
+  const [style, setStyle] = useState("Modern");
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -43,6 +44,7 @@ function App() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("style", style);
 
     const response = await fetch("http://127.0.0.1:8000/analyze", {
       method: "POST",
@@ -52,7 +54,7 @@ function App() {
     const data = await response.json();
     console.log(data);
     setObjects(data.objects);
-    setLayout("http://127.0.0.1:8000/" + data.layout);
+    setLayout("http://127.0.0.1:8000" + data.layout);
   };
 
   return (
@@ -99,6 +101,22 @@ function App() {
       </li>
       ))}
     </ul>
+    <h2>Select Interior Style</h2>
+
+    <select
+      value={style}
+      onChange={(e) => setStyle(e.target.value)}
+    >
+      <option>Modern</option>
+      <option>Minimal</option>
+      <option>Luxury</option>
+      <option>Scandinavian</option>
+      <option>Industrial</option>
+    </select>
+
+  <p>
+  Selected Style: <b>{style}</b>
+  </p>
 
     <h2>Room Layout</h2>
 
