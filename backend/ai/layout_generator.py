@@ -23,21 +23,26 @@ def generate_layout(objects, output_path):
 
     for obj in objects:
 
+        x = 40 + int((obj["x"] / 1600) * 680)
+        y = 40 + int((obj["y"] / 900) * 480)
+
+        x = max(60, min(x, 620))
+        y = max(80, min(y, 480))
+
         draw.rectangle(
-            (x, y, x + 120, y + 60),
+            (x, y, x + 100, y + 50),
             outline="blue",
             width=3
         )
 
         draw.text(
-            (x + 20, y + 20),
+            (x + 8, y + 18),
             obj["name"].upper(),
             fill="black"
-        )
+            )
+    y += 90
 
-        y += 90
-
-        if y > 430:
+    if y > 430:
             y = 100
             x += 180
 
