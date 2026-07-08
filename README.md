@@ -6,6 +6,29 @@ An AI-powered Interior Design application that analyzes room images, detects fur
 
 # ✨ Features
 
+# 📸 Screenshots
+
+## Home Page
+
+![Home](screenshots/home.png)
+
+---
+
+## Room Analysis
+
+![Analysis](screenshots/analysis.png)
+
+---
+
+## Room Layout
+
+![Layout](screenshots/layout.png)
+
+---
+
+## AI Generated Design
+
+![Generated](screenshots/generated.png)
 - 📷 Upload room images
 - 🪑 Detect furniture using YOLOv8
 - 🗺 Generate top-view room layout
