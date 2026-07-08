@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+from services.image_service import generate_room
 from fastapi import Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,13 +22,16 @@ app.add_middleware(
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+class StyleRequest(BaseModel):
+    style: str
+
 @app.get("/")
 def home():
     return {"message": "Backend is running!"}
 
 @app.post("/upload")
 async def upload_image(file: UploadFile = File(...)):
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, "latest.jpg")
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -41,20 +46,38 @@ async def analyze_image(
     file: UploadFile = File(...),
     style: str = Form("Modern")
 ):
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, "latest.jpg")
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     detected = detect_room(file_path)
-    print("Detected:", detected)
+    
     layout_path = "layouts/layout.png"
     generate_layout(detected, layout_path)
     
     print("Selected Style:", style)
+
+    
 
     return {
     "objects": detected,
     "layout": "/layouts/layout.png",
     "style": style
 }
+
+@app.post("/generate")
+async def generate_design(request: StyleRequest):
+
+    image_path = "uploads/latest.jpg"
+
+    image_url = generate_room(image_path, request.style)
+
+    return {
+        "image": image_url
+    }
+
+    return {
+        "status": response.status_code,
+        "result": response.text
+    }

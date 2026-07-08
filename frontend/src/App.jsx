@@ -6,6 +6,7 @@ function App() {
   const [objects, setObjects] = useState([]);
   const [layout, setLayout] = useState("");
   const [style, setStyle] = useState("Modern");
+  const [generatedImage, setGeneratedImage] = useState("");
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -51,11 +52,28 @@ function App() {
       body: formData,
     });
 
-    const data = await response.json();
-    console.log(data);
+  const data = await response.json();
     setObjects(data.objects);
     setLayout("http://127.0.0.1:8000" + data.layout);
   };
+
+
+  const generateDesign = async () => {
+
+  const response = await fetch("http://127.0.0.1:8000/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      style: style
+    })
+  });
+
+  const data = await response.json();
+
+  setGeneratedImage(data.image);
+ };
 
   return (
     <div style={{ padding: "30px" }}>
@@ -90,6 +108,11 @@ function App() {
         style={{ marginLeft: "10px" }}
       >
         Analyze Room
+        
+      </button>
+
+      <button onClick={generateDesign}>
+      Generate Design
       </button>
 
       <h2>Detected Objects</h2>
@@ -127,6 +150,18 @@ function App() {
     width="400"
   />
   )}
+
+    {generatedImage && (
+  <>
+    <h2>Generated Design</h2>
+
+    <img
+      src={generatedImage}
+      alt="Generated Room"
+      width="600"
+    />
+  </>
+)}
 
       
     </div>
